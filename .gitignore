@@ -1,0 +1,29 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# CMake build directories
+build/
+install/
+log/
+
+# Other folders not tracked because of size
+src/log
+*.vscode
+
+# ROS2 colcon build artifacts
+.colcon/
+*.log
+
+# Editor/IDE files
+src/.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Python
