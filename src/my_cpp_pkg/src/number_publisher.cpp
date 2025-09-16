@@ -18,7 +18,7 @@
         rclcpp::Publisher<example_interfaces::msg::Int64>::SharedPtr publisher_;
         void publishNumber(){
             auto number = example_interfaces::msg::Int64();
-            number.data = 100;
+            number.data = 2;
             publisher_->publish(number);
         }
         

@@ -22,7 +22,7 @@
     int counter_;
     void CallbackNumber(example_interfaces::msg::Int64::SharedPtr msg){
         example_interfaces::msg::Int64 ctr;
-        counter_++;
+        counter_ = counter_ + msg->data;
         ctr.data = counter_;
         
         RCLCPP_INFO(get_logger(), "%d", counter_);
