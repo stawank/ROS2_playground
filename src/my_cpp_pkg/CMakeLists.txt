@@ -34,7 +34,17 @@ add_executable(
   number_counter
   src/number_counter.cpp
 )
+add_executable(
+  add_two_ints_server
+  src/add_two_ints_server.cpp
+)
 
+ament_target_dependencies(
+  add_two_ints_server
+  example_interfaces
+  rclcpp
+
+)
 ament_target_dependencies(
   number_counter
   example_interfaces
@@ -70,6 +80,7 @@ install( TARGETS
   smartphone
   number_publisher
   number_counter
+  add_two_ints_server
   DESTINATION lib/${PROJECT_NAME})
 
 ament_package()
