@@ -38,6 +38,17 @@ add_executable(
   add_two_ints_server
   src/add_two_ints_server.cpp
 )
+add_executable(
+  add_two_ints_client_no_oop
+  src/add_two_ints_client_no_oop.cpp
+)
+
+ament_target_dependencies(
+  add_two_ints_client_no_oop
+  example_interfaces
+  rclcpp
+
+)
 
 ament_target_dependencies(
   add_two_ints_server
@@ -81,6 +92,7 @@ install( TARGETS
   number_publisher
   number_counter
   add_two_ints_server
+  add_two_ints_client_no_oop
   DESTINATION lib/${PROJECT_NAME})
 
 ament_package()
