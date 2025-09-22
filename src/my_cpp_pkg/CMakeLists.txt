@@ -9,6 +9,7 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(example_interfaces REQUIRED)
+find_package(custom_interfaces REQUIRED)
 
 add_executable(
   cpp_node
@@ -48,6 +49,17 @@ add_executable(
   src/add_two_ints_client.cpp
 )
 
+add_executable(
+  hardware_status_publisher
+  src/hardware_status_publisher.cpp
+)
+
+ament_target_dependencies(
+  hardware_status_publisher
+  custom_interfaces
+  rclcpp
+
+)
 ament_target_dependencies(
   add_two_ints_client
   example_interfaces
@@ -105,6 +117,7 @@ install( TARGETS
   add_two_ints_server
   add_two_ints_client_no_oop
   add_two_ints_client
+  hardware_status_publisher
   DESTINATION lib/${PROJECT_NAME})
 
 ament_package()
