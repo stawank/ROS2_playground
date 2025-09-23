@@ -54,6 +54,31 @@ add_executable(
   src/hardware_status_publisher.cpp
 )
 
+add_executable(
+  battery_client
+  src/battery.cpp
+)
+
+add_executable(
+  led_panel
+  src/led_panel_node.cpp
+)
+
+ament_target_dependencies(
+  led_panel
+  example_interfaces
+  custom_interfaces
+  rclcpp
+
+)
+
+ament_target_dependencies(
+  battery_client
+  custom_interfaces
+  example_interfaces
+  rclcpp
+
+)
 ament_target_dependencies(
   hardware_status_publisher
   custom_interfaces
@@ -118,6 +143,8 @@ install( TARGETS
   add_two_ints_client_no_oop
   add_two_ints_client
   hardware_status_publisher
+  battery_client
+  led_panel
   DESTINATION lib/${PROJECT_NAME})
 
 ament_package()
