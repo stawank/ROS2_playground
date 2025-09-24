@@ -1,4 +1,4 @@
-int32 led_number
-string state
+int64 led_number
+int64 state
 ---
 bool success

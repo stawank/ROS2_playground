@@ -1,41 +1,52 @@
     #include "rclcpp/rclcpp.hpp"
     #include "custom_interfaces/srv/set_led.hpp"
     #include "custom_interfaces/msg/led_panel_state.hpp"
-     #include "example_interfaces/msg/string.hpp"
+
     using namespace std::placeholders;
+    using namespace std::chrono_literals;
      
     class LedPanelNode : public rclcpp::Node 
     {
     public:
-        LedPanelNode() : Node("led_panel_node") , led_panel_({"off" ,"off" ,"off"})
+        LedPanelNode() : Node("led_panel_node") , led_states_({0, 0, 0})
         {
             publisher_ = this->create_publisher<custom_interfaces::msg::LedPanelState>("led_panel_state", 10);
-            led_server_ = this->create_service<custom_interfaces::srv::SetLed>("set_led",
-            std::bind(&LedPanelNode::callbackSetLed, this,_1,_2 ));
-            RCLCPP_INFO(this->get_logger(), "Server set_led running");
+            
+            server_ = this->create_service<custom_interfaces::srv::SetLed>("set_led",
+            std::bind(&LedPanelNode::callback_set_led, this,_1, _2));
+            RCLCPP_INFO(this->get_logger(), "LED Panel node has been started");
         }
     
 
     private:
-    static const int nLed_ = 3;
-    std::array<std::string, nLed_> led_panel_;
-    rclcpp::Service<custom_interfaces::srv::SetLed>::SharedPtr led_server_;
+
+    
+    std::vector<int64_t> led_states_;
     rclcpp::Publisher<custom_interfaces::msg::LedPanelState>::SharedPtr publisher_;
-    void callbackSetLed(const custom_interfaces::srv::SetLed::Request::SharedPtr request_,
-    const custom_interfaces::srv::SetLed::Response::SharedPtr response_){
-        RCLCPP_INFO(this->get_logger(), "Setting Led %d to state %s", int(request_->led_number), request_->state.c_str());
-        if (request_->led_number < 1 || request_->led_number > nLed_) {
-        RCLCPP_WARN(this->get_logger(), "Invalid LED number: %d", int(request_->led_number));
-        response_->success = false;
-        return;
+    rclcpp::Service<custom_interfaces::srv::SetLed>::SharedPtr server_;
+ 
+    void callback_set_led(const custom_interfaces::srv::SetLed::Request::SharedPtr request, const custom_interfaces::srv::SetLed::Response::SharedPtr response){
+        if(request->led_number>2||request->led_number<0){
+           RCLCPP_WARN(this->get_logger(), "Invalid request number"); 
+           response->success =  false;
+        }
+        if(request->state !=0 && request->state !=1){
+            RCLCPP_WARN(this->get_logger(), "Invalid request state"); 
+           response->success =  false;
+        }
+        else{
+        this->led_states_[request->led_number]= request->state;
+        response->success = true;
+        this->publish_led_states();
+        }
+        
+
     }
-        led_panel_[(request_->led_number)-1] = request_->state;
-        response_->success= true;
+    void publish_led_states(){
         auto msg = custom_interfaces::msg::LedPanelState();
-        msg.first = led_panel_[0].c_str();
-        msg.second = led_panel_[1].c_str();
-        msg.third = led_panel_[2].c_str();
+        msg.led_states = this->led_states_;
         publisher_->publish(msg);
+
 
     }
     };

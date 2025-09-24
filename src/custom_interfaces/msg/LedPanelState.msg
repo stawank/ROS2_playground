@@ -1,3 +1,1 @@
-string first
-string second
-string third
+int64[] led_states
