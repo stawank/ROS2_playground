@@ -7,8 +7,12 @@
     public:
         NumberPublisherNode() : Node("number_publisher")
         {
+            this->declare_parameter("number", 2);
+            this->declare_parameter("timer_period", 1.0);
+            number_ = this->get_parameter("number").as_int();
+            double timer_period_ = this->get_parameter("timer_period").as_double();
             publisher_ = this->create_publisher<example_interfaces::msg::Int64>("number", 10);
-            timer_ = this->create_wall_timer(0.1s,
+            timer_ = this->create_wall_timer(std::chrono::duration<double>(timer_period_),
                                             std::bind(&NumberPublisherNode::publishNumber, this));
             RCLCPP_INFO(this->get_logger(),"Number publisher has been started");
         
@@ -18,11 +22,12 @@
         rclcpp::Publisher<example_interfaces::msg::Int64>::SharedPtr publisher_;
         void publishNumber(){
             auto number = example_interfaces::msg::Int64();
-            number.data = 2;
+            number.data = number_;
             publisher_->publish(number);
         }
         
         rclcpp::TimerBase::SharedPtr timer_;
+        int number_;
     };
      
     int main(int argc, char **argv)
