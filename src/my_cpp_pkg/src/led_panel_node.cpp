@@ -8,8 +8,11 @@
     class LedPanelNode : public rclcpp::Node 
     {
     public:
-        LedPanelNode() : Node("led_panel_node") , led_states_({0, 0, 0})
+        LedPanelNode() : Node("led_panel_node") 
         {
+            this->declare_parameter<std::vector<int>>("led_states",{1,1,0});
+            led_states_ = this->get_parameter("led_states").as_integer_array();
+
             publisher_ = this->create_publisher<custom_interfaces::msg::LedPanelState>("led_panel_state", 10);
             
             server_ = this->create_service<custom_interfaces::srv::SetLed>("set_led",
